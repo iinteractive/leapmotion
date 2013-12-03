@@ -4,13 +4,8 @@
     <meta charset="utf-8">
   </head>
   <body>
-    <script src="http://js.leapmotion.com/examples/js/three.js"></script>
-    <script src="http://js.leapmotion.com/0.2.0-beta1/leap.min.js"></script>
-<!-- 
-    Current libraries from git:
-    <script src="../three.js/build/three.js"></script>
-    <script src="../leapjs/leap.js"></script>
--->
+    <script src="lib/three.min.r63.js"></script>
+    <script src="lib/leap.min.321b71394.js"></script>
     <script>
       console.log('CHECK');
       var SCENE_SIZE = 1000, camera, scene, renderer, stats, clock, geometry, material, mesh,controller, hands= [];
@@ -24,7 +19,7 @@
         camera.position.z = shelfDepth/1.1;
         scene = new THREE.Scene();
         geometry = new THREE.SphereGeometry(SCENE_SIZE/20,4,4);
-        material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, wireframeLinewidth:  1} );
+        material = new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe: true, wireframeLinewidth:  1} );
         for(var i = 0; i<2; i ++){
           var hand = new THREE.Mesh( geometry, material );
           hand.position.x = SCENE_SIZE * 1000;
@@ -81,14 +76,14 @@
           for ( var row = 0; row < rowCount; row ++ ) {
 
             // Left shelf
-            var object = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.5, wireframe: 1 } ) );
+            var object = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0xffffff, opacity: 0.5, wireframe: 1 } ) );
             object.position.x = 0;
             object.position.y = shelfHeight / rowCount * row;
             object.position.z = shelfWidth / colCount * col;
             scene.add( object );
 
             // Right shelf
-            var object = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.5, wireframe: 1 } ) );
+            var object = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0xffffff, opacity: 0.5, wireframe: 1 } ) );
             object.position.x = shelfWidth;
             object.position.y = shelfHeight / rowCount * row;
             object.position.z = shelfWidth / colCount * col;
