@@ -1,11 +1,11 @@
 
-In Chrome if you try to File | Open you'll get this error:
+In Chrome if you try to local File | Open you'll get this error:
 
    Cross-origin image load denied by Cross-Origin Resource Sharing policy. 
 
 Instead, run 
 
-   scripts/plackfile .
+   starman scripts/app.psgi
    http://0.0.0.0:5000/
 
 More info:

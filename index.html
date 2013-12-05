@@ -58,7 +58,7 @@
             var zDiv = document.getElementById("z");
 
             Leap.loop(function(frame) {
-                hDiv.innerHTML = frame.hands.length;
+                hDiv.innerHTML = frame.hands.length + " hands";
                 pDiv.innerHTML = frame.pointables.length;
 
                 if (frame.pointables.length < 3) {

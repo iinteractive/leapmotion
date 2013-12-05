@@ -1,11 +1,4 @@
-#!/usr/bin/env perl
-
-use Plack::Runner;
-
 my $app    = Plack::App::IndexFile->new({ root => shift })->to_app;
-my $runner = Plack::Runner->new;
-$runner->parse_options( '--access-log' => '/dev/null', @ARGV );
-$runner->run( $app );
 
 package Plack::App::IndexFile;
 
