@@ -1,0 +1,18 @@
+
+In Chrome if you try to File | Open you'll get this error:
+
+   Cross-origin image load denied by Cross-Origin Resource Sharing policy. 
+
+Instead, run 
+
+   scripts/plackfile .
+   http://0.0.0.0:5000/
+
+More info:
+
+   http://stackoverflow.com/questions/20165063/three-js-cross-origin-image-load-denied-by-cross-origin-resource-sharing-policy
+   https://github.com/mrdoob/three.js/wiki/How-to-run-things-locally
+   http://modernperlbooks.com/mt/2011/08/serving-a-local-directory-with-plack.html
+
+
+
