@@ -1,0 +1,59 @@
+var camera, scene, renderer, dice;
+
+init();
+animate();
+
+function init() {
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    scene = new THREE.Scene();
+
+    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
+    camera.position.set(110, 110, 250);
+    camera.lookAt(scene.position);
+    scene.add(camera);
+
+
+    var materials = [
+       new THREE.MeshLambertMaterial({
+           map: THREE.ImageUtils.loadTexture('/Content/Images/dice-1-hi.png')
+       }),
+       new THREE.MeshLambertMaterial({
+           map: THREE.ImageUtils.loadTexture('/Content/Images/dice-2-hi.png')
+       }),
+       new THREE.MeshLambertMaterial({
+           map: THREE.ImageUtils.loadTexture('/Content/Images/dice-3-hi.png')
+       }),
+       new THREE.MeshLambertMaterial({
+           map: THREE.ImageUtils.loadTexture('/Content/Images/dice-4-hi.png')
+       }),
+       new THREE.MeshLambertMaterial({
+           map: THREE.ImageUtils.loadTexture('/Content/Images/dice-5-hi.png')
+       }),
+       new THREE.MeshLambertMaterial({
+           map: THREE.ImageUtils.loadTexture('/Content/Images/dice-6-hi.png')
+       })
+    ];
+    dice = new THREE.Mesh(
+        new THREE.CubeGeometry( 562, 562, 562, 1, 1, 1 ),
+        new THREE.MeshFaceMaterial( materials ) );
+    scene.add( dice );
+
+    dice = new THREE.Mesh(
+        new THREE.CubeGeometry(562, 562, 562, 1, 1, 1, materials),
+        new THREE.MeshFaceMaterial());
+    scene.add(dice);
+
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+    dice.rotation.x += .05;
+    dice.rotation.y += .05;
+    dice.rotation.z += .05;
+    renderer.render(scene, camera);
+}
+
+

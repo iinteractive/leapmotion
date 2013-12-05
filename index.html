@@ -1,99 +1,50 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-  </head>
-  <body>
-    <script src="lib/three.min.r63.js"></script>
-    <script src="lib/leap.min.321b71394.js"></script>
-    <script>
-      console.log('CHECK');
-      var SCENE_SIZE = 1000, camera, scene, renderer, stats, clock, geometry, material, mesh,controller, hands= [];
-      var shelfWidth = SCENE_SIZE/3.9, shelfHeight = SCENE_SIZE/4, shelfDepth = SCENE_SIZE/3;
-      var rowCount = 2, colCount = 3;
+    <head>
+        <title>cube</title>
+        <style>canvas { width: 100%; height: 100% }</style>
+    </head>
+    <body>
+        <script src="lib/three.min.r63.js"></script>
+        <script>
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 
-      var init = function () {
-        camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, SCENE_SIZE/1000, SCENE_SIZE );
-        camera.position.x = shelfWidth/2;
-        camera.position.y = shelfHeight/3;
-        camera.position.z = shelfDepth/1.1;
-        scene = new THREE.Scene();
-        geometry = new THREE.SphereGeometry(SCENE_SIZE/20,4,4);
-        material = new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe: true, wireframeLinewidth:  1} );
-        for(var i = 0; i<2; i ++){
-          var hand = new THREE.Mesh( geometry, material );
-          hand.position.x = SCENE_SIZE * 1000;
-          hand.fingers = [];
-          for (var j = 0; j<5; j++){
-            var finger = new THREE.Mesh(geometry,material);
-            finger.position.x = SCENE_SIZE * 1000;
-            scene.add(finger);
-            hand.fingers.push(finger);
-          }
-          scene.add( hand );
-          hands.push( hand );
-        }
-        renderer = new THREE.WebGLRenderer();
-        renderer.setSize( window.innerWidth, window.innerHeight );
-        document.body.appendChild( renderer.domElement );
-        Leap.loop(function(frame){
-          for(var i = 0; i <2; i++){
-            if(frame.hands[i]){
-              hands[i].position = leapToScene(frame.hands[i].palmPosition)
-              for(var j = 0; j <5; j++){
-                if(frame.hands[i].fingers[j]){
-                  hands[i].fingers[j].position = leapToScene(frame.hands[i].fingers[j].tipPosition)
-                }else{
-                  hands[i].fingers[j].position.x = SCENE_SIZE * 1000
-                }
-              }
-            }else{
-              hands[i].position.x = SCENE_SIZE *1000
-            }
-          }
-        });
-        drawShelves(scene);
-      }
-      var animate = function () {
-        requestAnimationFrame( animate );
-        renderer.render( scene, camera );
-      }
-      init();
-      animate();
-      function leapToScene(leapPosition){
-        var x = (leapPosition[0]/300)*SCENE_SIZE
-        var y = (((leapPosition[1])-200)/300)*SCENE_SIZE
-        var z = (leapPosition[2]/300)*SCENE_SIZE
-        var toReturn = new THREE.Vector3(x,y,z)
-        return toReturn
-      }
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
 
+            var wood =  THREE.ImageUtils.loadTexture( 'textures/crate.gif' );
+            var side1 = THREE.ImageUtils.loadTexture( 'textures/1.jpg' );
+            var side2 = THREE.ImageUtils.loadTexture( 'textures/2.jpg' );
+            var side3 = THREE.ImageUtils.loadTexture( 'textures/3.jpg' );
 
-      function drawShelves(scene) {
-        var geometry = new THREE.CubeGeometry( 40, 40, 40 );
+            console.debug("JAY0");
 
-        for ( var col = 0; col < colCount; col ++ ) {
-          for ( var row = 0; row < rowCount; row ++ ) {
+            materials = [
+                new THREE.MeshBasicMaterial( { map: side1 } ),
+                new THREE.MeshBasicMaterial( { map: side2 } ),
+                new THREE.MeshBasicMaterial( { map: side3 } ),
+                new THREE.MeshBasicMaterial( { map: wood } ),
+                new THREE.MeshBasicMaterial( { map: wood } ),
+                new THREE.MeshBasicMaterial( { map: wood } )
+            ];
 
-            // Left shelf
-            var object = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0xffffff, opacity: 0.5, wireframe: 1 } ) );
-            object.position.x = 0;
-            object.position.y = shelfHeight / rowCount * row;
-            object.position.z = shelfWidth / colCount * col;
-            scene.add( object );
+            var cubeGeo = new THREE.CubeGeometry( 3, 3, 3, 1, 1, 1 );
+            var cube = new THREE.Mesh( cubeGeo, new THREE.MeshFaceMaterial( materials ));
+            scene.add( cube );
 
-            // Right shelf
-            var object = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0xffffff, opacity: 0.5, wireframe: 1 } ) );
-            object.position.x = shelfWidth;
-            object.position.y = shelfHeight / rowCount * row;
-            object.position.z = shelfWidth / colCount * col;
-            scene.add( object );
-          }
-        }
-      }
+            camera.position.z = 5;
 
-    </script>
-  </body>
+            var render = function () {
+                requestAnimationFrame(render);
+
+                cube.rotation.x += 0.01;
+                cube.rotation.y += 0.01;
+
+                renderer.render(scene, camera);
+            };
+            render();
+        </script>
+    </body>
 </html>
-
 
