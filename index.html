@@ -4,7 +4,16 @@
         <style>canvas { width: 100%; height: 100% }</style>
     </head>
     <body>
+
+                <div id="hands">2</div>
+                <div id="fingers">0</div>
+                <div id="x">0</div>
+                <div id="y">0</div>
+                <div id="z">0</div>
+
+
         <script src="lib/three.min.r63.js"></script>
+        <script src="lib/leap.min.321b71394.js"></script>
         <script>
             var scene = new THREE.Scene();
             var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
@@ -17,8 +26,6 @@
             var side1 = THREE.ImageUtils.loadTexture( 'textures/1.jpg' );
             var side2 = THREE.ImageUtils.loadTexture( 'textures/2.jpg' );
             var side3 = THREE.ImageUtils.loadTexture( 'textures/3.jpg' );
-
-//            console.debug("JAY0");
 
             materials = [
                 new THREE.MeshBasicMaterial( { map: side1 } ),
@@ -35,15 +42,84 @@
 
             camera.position.z = 5;
 
-            var render = function () {
-                requestAnimationFrame(render);
+            //var render = function () {
+            //    requestAnimationFrame(render);
 
                 //cube.rotation.x += 0.01;
-                cube.rotation.y -= 0.01;
+            //    cube.rotation.y -= 0.01;
+
+            //    renderer.render(scene, camera);
+            //};
+            //render();
+
+            var handsDiv = document.getElementById("hands");
+            var fingersDiv = document.getElementById("fingers");
+            var xDiv = document.getElementById("x");
+            var yDiv = document.getElementById("y");
+            var zDiv = document.getElementById("z");
+
+//            var handsDesc = document.getElementById("description-hands");
+//            var fingersDesc = document.getElementById("description-fingers");
+
+            var state  = null;
+            var startFrame = null;
+
+            Leap.loop(function(frame) {
+                var hands = frame.hands.length;
+                var fingers = frame.pointables.length;
+
+                handsDiv.innerHTML = hands;
+                fingersDiv.innerHTML = fingers;
+
+                var a = hands == 1 ? "hand" : "hands";
+                var b = fingers == 1 ? "finger" : "fingers";
+
+//                handsDesc.innerHTML = a;
+//                fingersDesc.innerHTML = b;
+
+                document.title = [hands, a, fingers, b].join(" ");
+
+                // ------------------------
+
+
+/*
+                if (frame.valid) {
+                    if (state == null) {
+                        if (frame.hands.length > 0 && frame.pointables.length <= 1) {
+                            startFrame = frame;
+//                            startX = camera.position.x;
+//                            startY = camera.position.y;
+//                            startZ = camera.position.z;
+                            state = 'moving';
+                        }
+                    } else if (state == 'moving') {
+                        var t = startFrame.translation(frame);
+                        //camera.position.x = t[0] * 10 + startX;
+                        //camera.position.y = t[1] * 10 + startY;
+                        //camera.position.z = t[2] * 10 + startZ;
+                        xDiv.innerHTML = t[1];
+                        cube.rotation.y = t[1] * .1;
+//                        if (frame.hands.length == 1 || frame.pointables.length > 1) {
+//                            state = null;
+//                       }
+                    }
+                }
+*/
+
+                frame.pointables.forEach(function(pointable,i) {
+                    // only act on 1 finger
+                    if (i > 0) return;
+                    xDiv.innerHTML = pointable.tipPosition[0];
+                    yDiv.innerHTML = pointable.tipPosition[1];
+                    zDiv.innerHTML = pointable.tipPosition[2];                    
+                    cube.rotation.y = pointable.tipPosition[0] * .02 + 180;
+                })
 
                 renderer.render(scene, camera);
-            };
-            render();
+            });
+
+
+
         </script>
     </body>
 </html>
