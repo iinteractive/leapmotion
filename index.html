@@ -59,16 +59,16 @@
 
             Leap.loop(function(frame) {
                 hDiv.innerHTML = frame.hands.length + " hands";
-                pDiv.innerHTML = frame.pointables.length;
+                pDiv.innerHTML = frame.pointables.length + " pointables";
 
                 if (frame.pointables.length < 3) {
                     var p = frame.pointables[0];
                     frame.pointables.forEach(function(pointable,i) {
                         // only act on 1 finger
                         if (i > 0) return;
-                        xDiv.innerHTML = p.tipPosition[0];
-                        yDiv.innerHTML = p.tipPosition[1];
-                        zDiv.innerHTML = p.tipPosition[2];                    
+                        xDiv.innerHTML = p.tipPosition[0] + " x";
+                        yDiv.innerHTML = p.tipPosition[1] + " y";
+                        zDiv.innerHTML = p.tipPosition[2] + " z";                    
                         cube.rotation.y = p.tipPosition[0] * .02   + Math.PI;
                         cube.rotation.x = (300 - p.tipPosition[1]) * .003;
                     });
