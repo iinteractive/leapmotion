@@ -16,6 +16,7 @@
             <div id="y">0</div>
             <div id="z">0</div>
             <div id="gestures"></div>
+            <div id="rotate_y"></div>
             </p>
         </div>
 
@@ -58,17 +59,30 @@
             camera.position.z = 5;
 
             var debug_only_one = 0;
+            var rotate_y = 0;
             Leap.loop(function(frame) {
                 // Handle swipes
                 frame.gestures.forEach(function(gesture,i) {
                     if (gesture.state == "stop") {
+
+                        // Debug info into the DOM
                         var id = "gesture_" + gesture.id;
                         $("#gestures").append("<span id='" + id + "'>" + gesture.type + " </span>");
                         $("#" + id).fadeOut(400, function() {
                             this.remove();
-                        }); 
+                        });
+
+                        if (gesture.type != "swipe") return;
+                        if (gesture.direction[0] > 0) {
+                            rotate_y += Math.PI / 2;
+                        } else {
+                            rotate_y -= Math.PI / 2;
+                        }
+
                     }
+
                     if (debug_only_one == 0) {
+                        // Debug info into the console
                         if (gesture.type != "swipe") return;
                         var j = JSON.stringify(gesture);
                         console.debug(j);
@@ -80,6 +94,17 @@
  
                 $("#hands").text(frame.hands.length + " hands");
                 $("#pointables").text(frame.pointables.length + " pointables");
+                $("#rotate_y").text(rotate_y + " rotate_y");
+
+                var x = rotate_y * .02;
+                // Move rotate_y towards 0
+                if (rotate_y > 0) {
+                    rotate_y -= Math.abs(x);
+                } else {
+                    rotate_y += Math.abs(x);
+                }
+                cube.rotation.y += x;
+
                 frame.pointables.forEach(function(p,i) {
                     // only act based on one finger
                     if (i > 0) return;
@@ -88,8 +113,6 @@
                     $("#z").text(p.tipPosition[2] + " z");
                     if (frame.pointables.length < 3) {
                         $("#pointables").css("color", "#FFF");
-                        cube.rotation.y = p.tipPosition[0] * .02   + Math.PI;
-                        cube.rotation.x = (300 - p.tipPosition[1]) * .003;
                     } else {
                         $("#pointables").css("color", "#F00");
                     }
