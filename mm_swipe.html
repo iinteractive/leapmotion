@@ -15,12 +15,18 @@
             <div id="x">0</div>
             <div id="y">0</div>
             <div id="z">0</div>
+            <div id="gestures"></div>
             </p>
         </div>
 
         <script src="lib/three.min.r63.js"></script>
         <script src="lib/leap.min.321b71394.js"></script>
+        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
         <script>
+            // Watch for gestures
+            var ctl = new Leap.Controller({enableGestures: true});
+            ctl.connect();
+
             var scene = new THREE.Scene();
             var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 
@@ -51,42 +57,43 @@
 
             camera.position.z = 5;
 
-            var hDiv = document.getElementById("hands");
-            var pDiv = document.getElementById("pointables");
-            var xDiv = document.getElementById("x");
-            var yDiv = document.getElementById("y");
-            var zDiv = document.getElementById("z");
-
-            // -------------------------
-            // Swiping stuff
-            var ctl = new Leap.Controller({enableGestures: true});
-            var swiper = ctl.gesture('swipe');
-            // -------------------------
-
-
+            var debug_only_one = 0;
             Leap.loop(function(frame) {
+                // Handle swipes
                 frame.gestures.forEach(function(gesture,i) {
-                    if (gesture.type != "swipe") return;
-                    var j = JSON.stringify(gesture);
-                    console.debug(j);
-                });
-/*
-                hDiv.innerHTML = frame.hands.length + " hands";
-                pDiv.innerHTML = frame.pointables.length + " pointables";
-
-                if (frame.pointables.length < 3) {
-                    var p = frame.pointables[0];
-                    frame.pointables.forEach(function(pointable,i) {
-                        // only act on 1 finger
-                        if (i > 0) return;
-                        xDiv.innerHTML = p.tipPosition[0] + " x";
-                        yDiv.innerHTML = p.tipPosition[1] + " y";
-                        zDiv.innerHTML = p.tipPosition[2] + " z";                    
+                    if (gesture.state == "stop") {
+                        var id = "gesture_" + gesture.id;
+                        $("#gestures").append("<span id='" + id + "'>" + gesture.type + " </span>");
+                        $("#" + id).fadeOut(400, function() {
+                            this.remove();
+                        }); 
+                    }
+                    if (debug_only_one == 0) {
+                        if (gesture.type != "swipe") return;
+                        var j = JSON.stringify(gesture);
+                        console.debug(j);
+                        if (gesture.state == "stop") {
+                            debug_only_one = 1;
+                        }
+                    }
+                });                    
+ 
+                $("#hands").text(frame.hands.length + " hands");
+                $("#pointables").text(frame.pointables.length + " pointables");
+                frame.pointables.forEach(function(p,i) {
+                    // only act based on one finger
+                    if (i > 0) return;
+                    $("#x").text(p.tipPosition[0] + " x");
+                    $("#y").text(p.tipPosition[1] + " y");
+                    $("#z").text(p.tipPosition[2] + " z");
+                    if (frame.pointables.length < 3) {
+                        $("#pointables").css("color", "#FFF");
                         cube.rotation.y = p.tipPosition[0] * .02   + Math.PI;
                         cube.rotation.x = (300 - p.tipPosition[1]) * .003;
-                    });
-                }
-*/
+                    } else {
+                        $("#pointables").css("color", "#F00");
+                    }
+                });
 
                 renderer.render(scene, camera);
             });
