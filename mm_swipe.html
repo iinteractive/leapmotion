@@ -1,0 +1,99 @@
+<html>
+    <head>
+        <title>Main Menu</title>
+        <style>
+            p b     { color:#FFF; }
+            canvas  { position:fixed; top:0px; left:0px; z-index:-1; }
+            div     { color:#FFF; }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <h1>Main Menu</h1>
+            <div id="hands">2</div>
+            <div id="pointables">0</div>
+            <div id="x">0</div>
+            <div id="y">0</div>
+            <div id="z">0</div>
+            </p>
+        </div>
+
+        <script src="lib/three.min.r63.js"></script>
+        <script src="lib/leap.min.321b71394.js"></script>
+        <script>
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+
+            container = document.getElementById("container");
+
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            var wood =  THREE.ImageUtils.loadTexture( 'textures/crate.gif' );
+            var side1 = THREE.ImageUtils.loadTexture( 'textures/1.jpg' );
+            var side2 = THREE.ImageUtils.loadTexture( 'textures/2.jpg' );
+            var side3 = THREE.ImageUtils.loadTexture( 'textures/3.jpg' );
+
+            materials = [
+                new THREE.MeshBasicMaterial( { map: side1 } ),
+                new THREE.MeshBasicMaterial( { map: side3 } ),
+                new THREE.MeshBasicMaterial( { map: wood  } ),
+                new THREE.MeshBasicMaterial( { map: wood  } ),
+                new THREE.MeshBasicMaterial( { map: wood  } ),
+                new THREE.MeshBasicMaterial( { map: side2 } )
+            ];
+
+            var cubeGeo = new THREE.CubeGeometry( 3, 3, 3, 1, 1, 1 );
+            var cube = new THREE.Mesh( cubeGeo, new THREE.MeshFaceMaterial( materials ));
+            cube.rotation.y = Math.PI;   // radians. PI = 180 degrees
+            scene.add( cube );
+
+            camera.position.z = 5;
+
+            var hDiv = document.getElementById("hands");
+            var pDiv = document.getElementById("pointables");
+            var xDiv = document.getElementById("x");
+            var yDiv = document.getElementById("y");
+            var zDiv = document.getElementById("z");
+
+            // -------------------------
+            // Swiping stuff
+            var ctl = new Leap.Controller({enableGestures: true});
+            var swiper = ctl.gesture('swipe');
+            // -------------------------
+
+
+            Leap.loop(function(frame) {
+                frame.gestures.forEach(function(gesture,i) {
+                    if (gesture.type != "swipe") return;
+                    var j = JSON.stringify(gesture);
+                    console.debug(j);
+                });
+/*
+                hDiv.innerHTML = frame.hands.length + " hands";
+                pDiv.innerHTML = frame.pointables.length + " pointables";
+
+                if (frame.pointables.length < 3) {
+                    var p = frame.pointables[0];
+                    frame.pointables.forEach(function(pointable,i) {
+                        // only act on 1 finger
+                        if (i > 0) return;
+                        xDiv.innerHTML = p.tipPosition[0] + " x";
+                        yDiv.innerHTML = p.tipPosition[1] + " y";
+                        zDiv.innerHTML = p.tipPosition[2] + " z";                    
+                        cube.rotation.y = p.tipPosition[0] * .02   + Math.PI;
+                        cube.rotation.x = (300 - p.tipPosition[1]) * .003;
+                    });
+                }
+*/
+
+                renderer.render(scene, camera);
+            });
+
+
+
+        </script>
+    </body>
+</html>
+
