@@ -83,7 +83,6 @@
                         } else {
                             rotate_y -= Math.PI / 2;
                         }
-
                     }
 
                     // Debug info into the console
@@ -102,15 +101,24 @@
                 $("#rotate_y").text(rotate_y + " rotate_y");
 
                 // Swipe based rotation
-                var x = rotate_y * .02;
-                // Move rotate_y towards 0
-                if (rotate_y > 0) {
-                    rotate_y -= Math.abs(x);
-                } else {
-                    rotate_y += Math.abs(x);
-                }
-                if ($('[name="rotate_via"]:checked').val() == "swipe") {
-                    cube.rotation.y += x;
+                if (rotate_y != 0) {                
+                    // Move rotate_y towards 0
+                    var x = rotate_y * .02;
+
+                    if (rotate_y > 0) {
+                        rotate_y -= Math.abs(x);
+                    } else {
+                        rotate_y += Math.abs(x);
+                    }
+                    // Close enough. Snap to 0 to save CPU cycles.
+                    if (rotate_y > -.01 && rotate_y < .01) {
+                        cube.rotation.y += rotate_y;
+                        rotate_y = 0;
+                    } else {
+                        if ($('[name="rotate_via"]:checked').val() == "swipe") {
+                            cube.rotation.y += x;
+                        }                        
+                    }
                 }
 
                 frame.pointables.forEach(function(p,i) {
