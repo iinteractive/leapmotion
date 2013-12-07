@@ -5,6 +5,21 @@
             p b     { color:#FFF; }
             canvas  { position:fixed; top:0px; left:0px; z-index:-1; }
             div     { color:#FFF; }
+
+            .cursor {
+                height: 30px; 
+                width: 30px; 
+                margin-top: -17px;
+                margin-left: -17px;
+                position: absolute;
+                border: 4px solid #000;
+                border-radius: 5px;
+                background: #888;
+            }
+            .cursor .inner {
+                height: 100%;
+                background: #fff;
+            }
         </style>
     </head>
     <body>
@@ -127,6 +142,20 @@
                     $("#x").text(p.tipPosition[0] + " x");
                     $("#y").text(p.tipPosition[1] + " y");
                     $("#z").text(p.tipPosition[2] + " z");
+
+                    // Draw cursor
+                    $(".cursor").remove();
+                    var sizeDifference = 100-Math.abs(p.tipPosition[2]);
+                    if (sizeDifference < 0) sizeDifference = 0;
+                    var top =  1200 - (p.tipPosition[1] * 2);
+                    var left = (p.tipPosition[0] + 150) * 3;
+                    $('<div>')
+                        .addClass("cursor")
+                        .css("top",  top  + "px")
+                        .css("left", left + "px")
+                        .append('<div class="cursor inner" style="width: ' + sizeDifference + '%;"></div>')
+                            .appendTo('body');
+
                     if (frame.pointables.length < 3) {
                         // User is pointing. Rotation may occur.
                         $("#pointables").css("color", "#FFF");
