@@ -1,0 +1,181 @@
+<html>
+    <head>
+        <title>Main Menu</title>
+        <style>
+            p b     { color:#FFF; }
+            canvas  { position:fixed; top:0px; left:0px; z-index:-1; }
+            div     { color:#FFF; }
+
+            .cursor {
+                height: 30px; 
+                width: 30px; 
+                margin-top: -4px;
+                margin-left: -4px;
+                position: absolute;
+                border: 4px solid #000;
+                border-radius: 5px;
+                background: #888;
+            }
+            .cursor .inner {
+                height: 100%;
+                background: #fff;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <h1>Main Menu</h1>
+            <input type="radio" name="rotate_via" value="position" checked> position
+            <input type="radio" name="rotate_via" value="swipe"> swipe
+            <div id="hands">2</div>
+            <div id="pointables">0</div>
+            <div id="x">0</div>
+            <div id="y">0</div>
+            <div id="z">0</div>
+            <div id="rotate_y"></div>
+            <div id="gestures"></div>
+            </p>
+        </div>
+
+        <script src="lib/three.min.r63.js"></script>
+        <script src="lib/leap.min.321b71394.js"></script>
+        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+        <script>
+            // Watch for gestures
+            var ctl = new Leap.Controller({enableGestures: true});
+            ctl.connect();
+
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+
+            container = document.getElementById("container");
+
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            var wood =  THREE.ImageUtils.loadTexture( 'textures/crate.gif' );
+            var side1 = THREE.ImageUtils.loadTexture( 'textures/1.jpg' );
+            var side2 = THREE.ImageUtils.loadTexture( 'textures/2.jpg' );
+            var side3 = THREE.ImageUtils.loadTexture( 'textures/3.jpg' );
+
+            materials = [
+                new THREE.MeshBasicMaterial( { map: side1 } ),
+                new THREE.MeshBasicMaterial( { map: side3 } ),
+                new THREE.MeshBasicMaterial( { map: wood  } ),
+                new THREE.MeshBasicMaterial( { map: wood  } ),
+                new THREE.MeshBasicMaterial( { map: wood  } ),
+                new THREE.MeshBasicMaterial( { map: side2 } )
+            ];
+
+            var cubeGeo = new THREE.CubeGeometry( 3, 3, 3, 1, 1, 1 );
+            var cube = new THREE.Mesh( cubeGeo, new THREE.MeshFaceMaterial( materials ));
+            cube.rotation.y = Math.PI;   // radians. PI = 180 degrees
+            scene.add( cube );
+
+            camera.position.z = 5;
+
+            var debug_only_one = 0;
+            var rotate_y = 0;
+            Leap.loop(function(frame) {
+                // Handle swipes
+                frame.gestures.forEach(function(gesture,i) {
+
+                    // Process a gesture that just ended
+                    if (gesture.state == "stop") {
+
+                        // Debug info into the DOM
+                        var id = "gesture_" + gesture.id;
+                        $("#gestures").append("<span id='" + id + "'>" + gesture.type + " </span>");
+                        $("#" + id).fadeOut(400, function() {
+                            this.remove();
+                        });
+
+                        // Swipes alter rotate_y
+                        if (gesture.type != "swipe") return;
+                        if (gesture.direction[0] > 0) {
+                            rotate_y += Math.PI / 2;
+                        } else {
+                            rotate_y -= Math.PI / 2;
+                        }
+                    }
+
+                    // Debug info into the console
+                    if (debug_only_one == 0) {
+                        if (gesture.type != "swipe") return;
+                        var j = JSON.stringify(gesture);
+                        console.debug(j);
+                        if (gesture.state == "stop") {
+                            debug_only_one = 1;
+                        }
+                    }
+                });                    
+ 
+                $("#hands").text(frame.hands.length + " hands");
+                $("#pointables").text(frame.pointables.length + " pointables");
+                $("#rotate_y").text(rotate_y + " rotate_y");
+
+                // Swipe based rotation
+                if (rotate_y != 0) {                
+                    // Move rotate_y towards 0
+                    var x = rotate_y * .02;
+
+                    if (rotate_y > 0) {
+                        rotate_y -= Math.abs(x);
+                    } else {
+                        rotate_y += Math.abs(x);
+                    }
+                    // Close enough. Snap to 0 to save CPU cycles.
+                    if (rotate_y > -.01 && rotate_y < .01) {
+                        cube.rotation.y += rotate_y;
+                        rotate_y = 0;
+                    } else {
+                        if ($('[name="rotate_via"]:checked').val() == "swipe") {
+                            cube.rotation.y += x;
+                        }                        
+                    }
+                }
+
+                frame.pointables.forEach(function(p,i) {
+                    // only act based on one finger
+                    if (i > 0) return;
+                    $("#x").text(p.tipPosition[0] + " x");
+                    $("#y").text(p.tipPosition[1] + " y");
+                    $("#z").text(p.tipPosition[2] + " z");
+
+                    // Draw cursor
+                    $(".cursor").remove();
+                    var sizeDifference = 100-Math.abs(p.tipPosition[2]);
+                    if (sizeDifference < 0) sizeDifference = 0;
+                    var top =  1200 - (p.tipPosition[1] * 2);
+                    var left = (p.tipPosition[0] + 150) * 3;
+                    $('<div>')
+                        .addClass("cursor")
+                        .css("top",  top  + "px")
+                        .css("left", left + "px")
+                        .append('<div class="cursor inner" style="width: ' + sizeDifference + '%;"></div>')
+                            .appendTo('body');
+
+                    if (frame.pointables.length < 3) {
+                        // User is pointing. Rotation may occur.
+                        $("#pointables").css("color", "#FFF");
+                        // Position based rotation
+                        if ($('[name="rotate_via"]:checked').val() == "position") {
+                            cube.rotation.y = p.tipPosition[0] * .02   + Math.PI;
+                            cube.rotation.x = (300 - p.tipPosition[1]) * .003;
+                        }
+                    } else {
+                        // Hand is open. No rotation.
+                        $("#pointables").css("color", "#F00");
+                    }
+                });
+
+                renderer.render(scene, camera);
+            });
+
+
+
+        </script>
+    </body>
+</html>
+
