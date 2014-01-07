@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leap Cursor Library - Image Cursor Switch</title>
+    <style type="text/css">
+        .leap-cursor {
+            position: absolute;
+            transition-property: none; 
+            background-image: url('../textures/leap_motion_logo.png');
+            background-size: 100% auto;
+            width:200px;
+            height:260px;
+        }
+        .box {
+            display:inline-block;
+            padding:30px;
+            width:300px;
+            height:500px;
+            text-align:center;
+            border-style:solid;
+            border-width:1px;
+        }
+        #box2 {
+            background-color: lightgreen;
+        }
+    </style>
+    <script type="text/javascript" src="../lib/leap-manager.js"></script>
+    <script type="text/javascript" src="../lib/leap.min.321b71394.js"></script>
+    <script type="text/javascript" src="../lib/jquery-v1.10.2.min.js"></script>
+</head>
+<body>
+    <h1>Image Cursor Switching</h1>
+    <p>Your fingertips (pointables) are now custom images. The z position of your each cursor controls the zoom factor of the image(s).</p>
+    <div id="box1" class="box">1</div>
+    <div id="box2" class="box">2</div>
+    <div id="box3" class="box">3</div>
+
+    <script type="text/javascript">
+        $('#box1').hover(function() {
+            $('.leap-pointable-cursor').css("backgroundImage", "url('../textures/1.jpg')");
+        });
+        $('#box2').hover(function() {
+            $('.leap-pointable-cursor').css("backgroundImage", "url('../textures/2.jpg')");
+        });
+        $('#box3').hover(function() {
+            $('.leap-pointable-cursor').css("backgroundImage", "url('../textures/3.jpg')");
+        });
+
+        LeapManager.init({
+            maxCursors: 5,
+            enableMetaGestures: false,
+            interactiveSelector: '.box'
+        });
+    </script>
+</body>
+</html>
