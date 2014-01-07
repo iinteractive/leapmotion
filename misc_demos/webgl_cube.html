@@ -37,9 +37,9 @@
             </p>
         </div>
 
-        <script src="lib/three.min.r63.js"></script>
-        <script src="lib/leap.min.321b71394.js"></script>
-        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="../lib/three.min.r63.js"></script>
+        <script src="../lib/leap.min.321b71394.js"></script>
+        <script src="../lib/jquery-v1.10.2.min.js"></script>
         <script>
             // Watch for gestures
             var ctl = new Leap.Controller({enableGestures: true});
@@ -54,10 +54,10 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
             container.appendChild(renderer.domElement);
 
-            var wood =  THREE.ImageUtils.loadTexture( 'textures/crate.gif' );
-            var side1 = THREE.ImageUtils.loadTexture( 'textures/1.jpg' );
-            var side2 = THREE.ImageUtils.loadTexture( 'textures/2.jpg' );
-            var side3 = THREE.ImageUtils.loadTexture( 'textures/3.jpg' );
+            var wood =  THREE.ImageUtils.loadTexture( '../textures/crate.gif' );
+            var side1 = THREE.ImageUtils.loadTexture( '../textures/1.jpg' );
+            var side2 = THREE.ImageUtils.loadTexture( '../textures/2.jpg' );
+            var side3 = THREE.ImageUtils.loadTexture( '../textures/3.jpg' );
 
             materials = [
                 new THREE.MeshBasicMaterial( { map: side1 } ),
