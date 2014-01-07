@@ -1,4 +1,6 @@
 /*
+    https://github.com/bartaz/impress.js
+
     So you like the style of impress.js demo?
     Or maybe you are just curious how it was done?
 
@@ -257,7 +259,7 @@ a:focus {
 #title .try {
     font-size: 64px;
     position: absolute;
-    top: -0.5em;
+    top:  0.5em;
     left: 1.5em;
 
     -webkit-transform: translateZ(20px);
@@ -269,6 +271,16 @@ a:focus {
 
 #title h1 {
     font-size: 190px;
+
+    -webkit-transform: translateZ(50px);
+    -moz-transform:    translateZ(50px);
+    -ms-transform:     translateZ(50px);
+    -o-transform:      translateZ(50px);
+    transform:         translateZ(50px);
+}
+
+#title h2 {
+    font-size: 140px;
 
     -webkit-transform: translateZ(50px);
     -moz-transform:    translateZ(50px);
@@ -583,7 +595,7 @@ a:focus {
     position: fixed;
     left: 0;
     right: 0;
-    bottom: 200px;
+    bottom: 100px;
 
     background: rgba(0,0,0,0.5);
     color: #EEE;
@@ -633,7 +645,7 @@ a:focus {
 /*
     ... and we will show it when the first step (with id 'bored') is active.
 */
-.impress-on-bored .hint {
+.impress-on-title .hint {
     /*
         We remove the transparency and position the hint in its default fixed
         position.
