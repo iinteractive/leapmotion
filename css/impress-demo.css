@@ -289,7 +289,7 @@ h2 {
     transform:         translateZ(50px);
 }
 
-#title .footnote {
+.footnote {
     font-size: 32px;
 }
 
