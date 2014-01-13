@@ -44,6 +44,12 @@
                 renderer.render(scene, camera);
             };
 
+            var tapCount = 1;
+            document.body.addEventListener("leap-screenTap", function(e){
+                console.debug(tapCount + ": ScreenTap Gesture");
+                tapCount++;
+            });
+
             LeapManager.init({
                 maxCursors: 5,
                 enableMetaGestures: false,
