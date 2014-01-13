@@ -35,19 +35,21 @@
 
             camera.position.z = 5;
 
+            var animate = 0;
             var render = function () {
                 requestAnimationFrame(render);
-
-                cube.rotation.x += 0.1;
-                cube.rotation.y += 0.1;
-
+                if (animate-- > 0) {
+                    cube.rotation.x += 0.1;
+                    cube.rotation.y += 0.1;                    
+                }
                 renderer.render(scene, camera);
             };
 
             var tapCount = 1;
-            document.body.addEventListener("leap-screenTap", function(e){
-                console.debug(tapCount + ": ScreenTap Gesture");
+            document.body.addEventListener("leap-keyTap", function(e){
+                console.debug(tapCount + ": keyTap Gesture");
                 tapCount++;
+                animate = 100;
             });
 
             LeapManager.init({
