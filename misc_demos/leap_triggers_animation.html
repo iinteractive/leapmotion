@@ -40,7 +40,10 @@
                 requestAnimationFrame(render);
                 if (animate-- > 0) {
                     cube.rotation.x += 0.1;
-                    cube.rotation.y += 0.1;                    
+                    cube.rotation.y += 0.1;              
+                    camera.position.z -= 0.05;
+                } else {
+                    camera.position.z = 5;
                 }
                 renderer.render(scene, camera);
             };
@@ -50,6 +53,7 @@
                 console.debug(tapCount + ": keyTap Gesture");
                 tapCount++;
                 animate = 100;
+                camera.position.z = 5;
             });
 
             LeapManager.init({
