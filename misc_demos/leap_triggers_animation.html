@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>cube</title>
+        <title>Leap triggers animation</title>
         <style>
             canvas { 
                 width: 100%; 
@@ -9,7 +9,7 @@
             .leap-cursor {
                 position: absolute;
                 transition-property: none; 
-                background-image: url('leap_motion_logo.png');
+                background-image: url('../textures/1.jpg');
                 background-size: 100% auto;
                 width:200px;
                 height:96px;
@@ -18,7 +18,8 @@
     </head>
     <body>
         <script src="../lib/three.min.r63.js"></script>
-        <script src="lib/leap-manager.js"></script>
+        <script type="text/javascript" src="../lib/leap-manager.js"></script>
+        <script type="text/javascript" src="../lib/leap.min.321b71394.js"></script>
         <script>
             var scene = new THREE.Scene();
             var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
@@ -42,6 +43,12 @@
 
                 renderer.render(scene, camera);
             };
+
+            LeapManager.init({
+                maxCursors: 5,
+                enableMetaGestures: false,
+                greedySelector: 'body'
+            });
 
             render();
         </script>
