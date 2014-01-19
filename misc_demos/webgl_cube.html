@@ -98,6 +98,7 @@
                         } else {
                             rotate_y -= Math.PI / 2;
                         }
+                        play_sound("six-million-dollar-man.wav");
                     }
 
                     // Debug info into the console
@@ -173,6 +174,15 @@
                 renderer.render(scene, camera);
             });
 
+
+            function play_sound(filename) {
+                var audio = document.createElement("audio");
+                audio.src = filename;
+                audio.addEventListener("ended", function () {
+                    document.removeChild(this);
+                }, false);
+                audio.play();   
+            }
 
 
         </script>
